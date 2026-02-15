@@ -98,24 +98,47 @@ class Engine{
 
 
 void verification_morphology(string root, string derived_word) {
-        //decompose the dervied word into single characters
+
+    // 1️⃣ Decompose root
+    vector<string> root_letters;
+    for (size_t i = 0; i < root.size(); i += 2) {
+        root_letters.push_back(root.substr(i, 2));
+    }
+
+    // 2️⃣ Decompose derived word
     vector<string> decomposed_word;
     for (size_t i = 0; i < derived_word.size();) {
-         char c = derived_word[i];
-        size_t charLength = 2;
+        size_t charLength = 2;  // assuming Arabic UTF-8 2 bytes
         decomposed_word.push_back(derived_word.substr(i, charLength));
         i += charLength;
     }
 
-    for (const auto& letter : decomposed_word) {
-        cout << letter << endl;
-    }
-}
+    // 3️⃣ Extract scheme
+    vector<string> scheme;
 
+    for (const auto& letter : decomposed_word) {
+
+        if (letter == root_letters[0])
+            scheme.push_back("ف");
+        else if (letter == root_letters[1])
+            scheme.push_back("ع");
+        else if (letter == root_letters[2])
+            scheme.push_back("ل");
+        else
+            scheme.push_back(letter);
+    }
+
+    // 4️⃣ Print scheme
+    cout << "Scheme: ";
+    for (const auto& s : scheme)
+        cout << s;
+
+    cout << endl;
+};
 
 int main() {
      
-    verification_morphology("ب","مكتوب");
+    verification_morphology("كتب","مكتوب");
 
      return 0;
 };
