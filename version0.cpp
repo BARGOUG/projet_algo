@@ -30,10 +30,8 @@ class Engine{
         string result = "";
         
         for (int i = 0; i < id.length(); i++) {
-            // Check single byte (ASCII) or first byte of Arabic
             char c = id[i];
             
-            // Check for Arabic letters by comparing substrings
             string ch = id.substr(i, 2);  // Get 2-byte Arabic char
             
             if (ch == "ف") {
@@ -116,22 +114,22 @@ bool compare(string original,string derived_word){
 
 
 struct MorphScheme {
-    string name;         // e.g., "فاعل", "مفعول", "افتعل"
-    string description;  // optional description
-    // You can add a function pointer or lambda for transformation rule
-    // For simplicity, we just store a string here
+    string name;         
+    string description;
 };
 
-// ------------------ Hash Table ------------------
 class MorphHashTable {
 private:
     static const int TABLE_SIZE = 31; // simple prime number
     list<MorphScheme> table[TABLE_SIZE];
 
-    // Simple hash function based on first character UTF-8 code
+    // Optimized hash function using DJB2
     int hashFunction(const string& key) {
-        if (key.empty()) return 0;
-        return (unsigned char)key[0] % TABLE_SIZE;
+        unsigned long hash = 5381;
+        for (unsigned char c : key) {
+            hash = ((hash << 5) + hash) + c; // hash * 33 + c
+        }
+        return hash % TABLE_SIZE;
     }
 
 public:
@@ -202,8 +200,15 @@ int main() {
     cout << "After removing 'افتعل':\n";
     hashTable.display();
 
+    // Reuse the same variable, no redeclaration
+    scheme = hashTable.find("مفعول");
+    if (scheme) {
+        cout << "Access after removal: " << scheme->name << endl;
+    }
+
     return 0;
 }
+
 
 
 
