@@ -93,10 +93,6 @@ class Engine{
 
 
 
-
-
-
-
 void verification_morphology(string root, string derived_word) {
 
     // 1️⃣ Decompose root
@@ -108,7 +104,7 @@ void verification_morphology(string root, string derived_word) {
     // 2️⃣ Decompose derived word
     vector<string> decomposed_word;
     for (size_t i = 0; i < derived_word.size();) {
-        size_t charLength = 2;  // assuming Arabic UTF-8 2 bytes
+        size_t charLength = 2;  
         decomposed_word.push_back(derived_word.substr(i, charLength));
         i += charLength;
     }
@@ -138,7 +134,34 @@ void verification_morphology(string root, string derived_word) {
 
 int main() {
      
-    verification_morphology("كتب","مكتوب");
+ verification_morphology("كتب", "كاتب");
+verification_morphology("جلس", "جالس");
+verification_morphology("ضرب", "ضارب");
+verification_morphology("لعب", "لاعب");
+verification_morphology("خرج", "خارج");
+
+
+verification_morphology("كتب", "مكتوب");
+verification_morphology("شرب", "مشروب");
+verification_morphology("ضرب", "مضروب");
+verification_morphology("حفظ", "محفوظ");
+verification_morphology("فتح", "مفتوح");
+
+
+verification_morphology("كتب", "اكتتب");
+verification_morphology("دخل", "ادخل");     // simplified (no hamza handling)
+verification_morphology("خرج", "اخرج");     // simplified
+verification_morphology("علم", "اعتلم");    // artificial but pattern-valid
+verification_morphology("حفظ", "احتفظ");
+
+
+
+verification_morphology("علم", "تعليم");
+verification_morphology("كتب", "تكتـيب");   // artificial but valid pattern
+verification_morphology("نظم", "تنظيم");
+verification_morphology("حرك", "تحريك");
+verification_morphology("درس", "تدريس");
+
 
      return 0;
 };
