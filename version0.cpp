@@ -220,15 +220,21 @@ int main() {
         }
     }
 
-    // Generate derived words
-    vector<string> results = engine.derived_word_generation(root, selected_ids);
+   // Generate derived words
+// Generate derived words
+// Generate derived words
+vector<string> results = engine.derived_word_generation(root, selected_ids);
 
-    cout << "\nGenerated words:\n";
-    for (const auto& word : results) {
-        cout << word << endl;
-    }
+cout << "\nGenerated Results:\n";
 
-    return 0;
+for (size_t i = 0; i < results.size(); i++) {
+    cout << "(" 
+         << root << " , "
+         << selected_ids[i] << " , "
+         << results[i]
+         << ")"
+         << endl;
+}
 }
 
 
