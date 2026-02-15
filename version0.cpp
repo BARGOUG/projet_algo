@@ -2,7 +2,8 @@
 #include <string>
 #include <vector>
 #include <fstream>
-
+#include <map>
+#include <list>
 using namespace std;
 
 struct Derived_words{
@@ -18,15 +19,11 @@ struct Node {
     Node* right;
 };
 
-struct Scheme{
-    string id;
-    string abstract_scheme;
-    string rule;
-};
+
+
 
 
 class Engine{
-
      string derived_word_generation(string root,string id) {
         if (root.length() < 3) return "";
         
@@ -110,31 +107,103 @@ bool compare(string original,string derived_word){
 
 };
 
-int main() {
 
-    vector<string> roots;
-    ifstream infile("roots.txt"); // open the file
 
-    if (!infile) {
-        cerr << "Error: Cannot open file!" << endl;
-        return 1;
-    }
 
-    string line;
-    while (getline(infile, line)) {
-        if (!line.empty()) {
-            roots.push_back(line); // add each word to vector
-        }
-    }
 
-    infile.close();
-    cout << "Loaded Arabic roots:" << endl;
-    for (const auto& word : roots) {
-        cout << word << endl;
-    }
-     return 0;
+
+
+
+
+struct MorphScheme {
+    string name;         // e.g., "فاعل", "مفعول", "افتعل"
+    string description;  // optional description
+    // You can add a function pointer or lambda for transformation rule
+    // For simplicity, we just store a string here
 };
 
+// ------------------ Hash Table ------------------
+class MorphHashTable {
+private:
+    static const int TABLE_SIZE = 31; // simple prime number
+    list<MorphScheme> table[TABLE_SIZE];
+
+    // Simple hash function based on first character UTF-8 code
+    int hashFunction(const string& key) {
+        if (key.empty()) return 0;
+        return (unsigned char)key[0] % TABLE_SIZE;
+    }
+
+public:
+    // Add a scheme
+    void insert(const MorphScheme& scheme) {
+        int index = hashFunction(scheme.name);
+        // check duplicate
+        for (auto& s : table[index]) {
+            if (s.name == scheme.name) {
+                s.description = scheme.description; // modify existing
+                return;
+            }
+        }
+        table[index].push_back(scheme);
+    }
+
+    // Remove a scheme
+    void remove(const string& name) {
+        int index = hashFunction(name);
+        table[index].remove_if([&](const MorphScheme& s){ return s.name == name; });
+    }
+
+    // Find a scheme
+    MorphScheme* find(const string& name) {
+        int index = hashFunction(name);
+        for (auto& s : table[index]) {
+            if (s.name == name) return &s;
+        }
+        return nullptr;
+    }
+
+    // Display all schemes
+    void display() {
+        for (int i = 0; i < TABLE_SIZE; ++i) {
+            if (!table[i].empty()) {
+                cout << "Index " << i << ":\n";
+                for (auto& s : table[i]) {
+                    cout << "  " << s.name << " -> " << s.description << "\n";
+                }
+            }
+        }
+    }
+};
+
+
+
+int main() {
+    MorphHashTable hashTable;
+
+    // Insert schemes
+    hashTable.insert({"فاعل", "active participle"});
+    hashTable.insert({"مفعول", "passive participle"});
+    hashTable.insert({"افتعل", "derived verb pattern"});
+    hashTable.insert({"تفعيل", "causative or intensive pattern"});
+
+    // Display all schemes
+    cout << "All morphological schemes:\n";
+    hashTable.display();
+
+    // Find a scheme
+    MorphScheme* scheme = hashTable.find("مفعول");
+    if (scheme) {
+        cout << "Found scheme: " << scheme->name << " -> " << scheme->description << "\n";
+    }
+
+    // Remove a scheme
+    hashTable.remove("افتعل");
+    cout << "After removing 'افتعل':\n";
+    hashTable.display();
+
+    return 0;
+}
 
 
 
