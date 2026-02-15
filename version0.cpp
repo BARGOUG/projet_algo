@@ -22,12 +22,31 @@ struct Node {
     Node* right;
 };
 struct Arbre{
-    Node* racine;
-    void intiat_arbre(){
-        
+    Node* initialisation_arbre(){
+        return nullptr;
+    }
+    Node* root = initialisation_arbre();
+};
+    
+
+ vector<string> load_roots_from_file(const string& filename) {
+
+    vector<string> roots;
+    ifstream file(filename);
+
+    if (!file.is_open()) {
+        cout << "Error: Cannot open file.\n";
+        return roots;
     }
 
+    string line;
+    while (getline(file, line)) {
+        if (!line.empty())
+            roots.push_back(line);
+    }
 
+    file.close();
+    return roots;
 
 };
 
@@ -255,16 +274,10 @@ cout << "\nGenerated Results:\n";
 
 for (size_t i = 0; i < results.size(); i++) {
     cout << "(" 
-         << root << " , "
-         << selected_ids[i] << " , "
-         << results[i]
-         << ")"
-         << endl;
+        << root << " , "
+        << selected_ids[i] << " , "
+        << results[i]
+        << ")"
+        << endl;
 }
 }
-
-
-
-
-
-
