@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <fstream>
 
 using namespace std;
 
@@ -62,18 +63,6 @@ class Engine{
         return result;
     }
 };
-
-
-
-
-
-
-
-
-
-
-
-
 string get_original(string scheme,string derived_word){
     string original= "";
     for(size_t i = 0; i < scheme.size(); i += 2){
@@ -84,46 +73,36 @@ string get_original(string scheme,string derived_word){
     return original;
 }
 
-
-
 string verification_morphology(string root, string derived_word) {
-
-    // 1️⃣ Decompose root
     vector<string> root_letters;
     for (size_t i = 0; i < root.size(); i += 2) {
         root_letters.push_back(root.substr(i, 2));
     }
 
-    // 2️⃣ Decompose derived word
     vector<string> decomposed_word;
     for (size_t i = 0; i < derived_word.size();) {
-        size_t charLength = 2;  
-        decomposed_word.push_back(derived_word.substr(i, charLength));
-        i += charLength;
+        decomposed_word.push_back(derived_word.substr(i, 2));
+        i += 2;
     }
 
-    // 3️⃣ Extract scheme
-    vector<string> scheme;
+    string scheme_s = "";
+    size_t root_index = 0;
 
     for (const auto& letter : decomposed_word) {
+        if (root_index < 3 && letter == root_letters[root_index]) {
+            if (root_index == 0) scheme_s += "ف";
+            else if (root_index == 1) scheme_s += "ع";
+            else if (root_index == 2) scheme_s += "ل";
 
-        if (letter == root_letters[0])
-            scheme.push_back("ف");
-        else if (letter == root_letters[1])
-            scheme.push_back("ع");
-        else if (letter == root_letters[2])
-            scheme.push_back("ل");
-        else
-            scheme.push_back(letter);
+            root_index++;  // move to next root letter
+        }
+        else {
+            scheme_s += letter;
+        }
     }
-
-    // 4️⃣ return scheme
-    string scheme_s="";
-    for (const auto& s : scheme)
-        scheme_s+=s;
-    cout<<(scheme_s) <<endl;
     return scheme_s;
-};
+}
+
 bool compare(string original,string derived_word){
     string scheme =  verification_morphology(original,derived_word);
     string new_original = get_original(scheme,derived_word);
@@ -132,28 +111,27 @@ bool compare(string original,string derived_word){
 };
 
 int main() {
-  // Pattern: فاعل
-cout << compare("كتب", "كاتب");       // true
-cout <<compare("جلس", "جالس");       // true
-cout <<compare("لعب", "لاعب");       // true
 
-// Pattern: مفعول
-cout <<compare("كتب", "مكتوب");      // true
-cout <<compare("شرب", "مشروب");      // true
-cout <<compare("حفظ", "محفوظ");      // true
+    vector<string> roots;
+    ifstream infile("roots.txt"); // open the file
 
-// Pattern: افتعل
-cout <<compare("كتب", "اكتتب");      // true
-cout <<compare("حفظ", "احتفظ");      // true
+    if (!infile) {
+        cerr << "Error: Cannot open file!" << endl;
+        return 1;
+    }
 
-// Pattern: تفعيل
-cout <<compare("علم", "تعليم");      // true
-cout <<compare("نظم", "تنظيم");      // true
-cout << compare("درس", "تدريس");      // true
+    string line;
+    while (getline(infile, line)) {
+        if (!line.empty()) {
+            roots.push_back(line); // add each word to vector
+        }
+    }
 
-
-
-
+    infile.close();
+    cout << "Loaded Arabic roots:" << endl;
+    for (const auto& word : roots) {
+        cout << word << endl;
+    }
      return 0;
 };
 
