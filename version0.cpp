@@ -21,7 +21,12 @@ struct Scheme{
     string id;
     string abstract_scheme;
     string rule;
-     string apply_scheme(string root) {
+};
+
+
+class Engine{
+
+     string derived_word_generation(string root,string id) {
         if (root.length() < 3) return "";
         
         string result = "";
@@ -56,39 +61,64 @@ struct Scheme{
         
         return result;
     }
+    void verification_morphology(string root, string derived_word) {
+        //decompose the dervied word into single characters
+    vector<string> decomposed_word;
+    for (size_t i = 0; i < derived_word.size();) {
+         char c = derived_word[i];
+        size_t charLength = 1;
+        decomposed_word.push_back(derived_word.substr(i, charLength));
+        i += charLength;
+    }
+
+    for (const auto& letter : decomposed_word) {
+        cout << letter << endl;
+    }
+}
 };
 
 
-int main() {
-    // Define schemes
-    Scheme s1 = {"مفعول", "mafʿūl", "Passive participle"};
-    Scheme s2 = {"فاعل", "fāʿil", "Active participle"};
-    Scheme s3 = {"تفعيل", "tafʿīl", "Causative"};
-    Scheme s4 = {"تفعيل", "tafʿīl", "Causative"};
-    Scheme s5 = {"افتعل", "iftala", "Causative"};
-
-    
-    // Apply to root "كتب" (k-t-b: to write)
-    string root = "كتب";
-    
-    cout << s1.apply_scheme(root) << endl;  // مكتوب (written)
-    cout << s2.apply_scheme(root) << endl;  // كاتب (writer)
-    cout << s3.apply_scheme(root) << endl;  // تكتيب (causative)
-    
-    // Apply to root "درس" (d-r-s: to study)
-    root = "درس";
-    cout << s1.apply_scheme(root) << endl;  // مدروس (studied)
-    cout << s2.apply_scheme(root) << endl;  // دارس (student)
-    cout << s3.apply_scheme(root) << endl;  // تكتيب (causative)
 
 
-    root = "خرط";
-    cout << s1.apply_scheme(root) << endl;  // مدروس (studied)
-    cout << s2.apply_scheme(root) << endl;  // دارس (student)
-    cout << s3.apply_scheme(root) << endl;  // تكتيب (causative)
-    
-    return 0;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void verification_morphology(string root, string derived_word) {
+        //decompose the dervied word into single characters
+    vector<string> decomposed_word;
+    for (size_t i = 0; i < derived_word.size();) {
+         char c = derived_word[i];
+        size_t charLength = 2;
+        decomposed_word.push_back(derived_word.substr(i, charLength));
+        i += charLength;
+    }
+
+    for (const auto& letter : decomposed_word) {
+        cout << letter << endl;
+    }
 }
+
+
+int main() {
+     
+    verification_morphology("ب","مكتوب");
+
+     return 0;
+};
 
 
 
