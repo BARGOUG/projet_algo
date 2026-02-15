@@ -13,63 +13,61 @@ struct Derived_words
     int frequence;
 };
 // Noeud d'une arbre
-struct Node
-{
+struct Node {
     string arabic_root;
     char letters[3];
-    Derived_words *derived;
-    Node *left;
-    Node *right;
+    Derived_words* derived;
+    Node* left;
+    Node* right;
 };
-struct Arbre
-{
-    Node *initialisation_arbre()
-    {
-        return nullptr;
-    }
-    Node *root = initialisation_arbre();
-    // creating a new node for the tree
-    Node *create_node(string word)
-    {
-        Node *node = new Node;
+struct Arbre {
+    Node* root;
+
+    Arbre() { root = nullptr; }
+
+    // Create a new node
+    Node* create_node(const string& word) {
+        Node* node = new Node;
         node->arabic_root = word;
+        node->left = nullptr;
+        node->right = nullptr;
+        node->derived = new Derived_words;
+        node->derived->frequence = 0;
         return node;
     }
-    // filling up the tree
 
-    Node *fill_tree(Node *tree_root, vector<string> words)
-    {
-        if (tree_root == nullptr)
-        {
-            tree_root = create_node(words[0]);
-            words.erase(words.begin());
-            cout << words[0];
-            Node *temp_root = tree_root;
-            for(const auto word : words){
-                insert(temp_root,word);
-            }
-        }
-
-    };
-    void insert(Node *tree_root, string word)
-    {
-        cout<<"hello asba";
-        if (tree_root == nullptr)
-        {
+    // Insert recursively (pointer by reference!)
+    void insert(Node*& tree_root, const string& word) {
+        if (tree_root == nullptr) {
             tree_root = create_node(word);
+            return;
         }
-        if (tree_root->arabic_root > word)
-        {
+        if (word < tree_root->arabic_root)
             insert(tree_root->left, word);
-        }
-        else
-        {
+        else if (word > tree_root->arabic_root)
             insert(tree_root->right, word);
-        }
-    };
+        // equal values: ignore or handle duplicates
+    }
 
-    // vector<string> words = load_roots_from_file("roots.txt");
-    // root=fill_tree(root,words);
+    // Fill tree from vector
+    void fill_tree(const vector<string>& words) {
+        for (const auto& w : words) {
+            insert(root, w);
+        }
+    }
+
+    // In-order traversal
+    void display(Node* tree_root) {
+        if (!tree_root) return;
+        cout << tree_root->arabic_root << " ";
+        display(tree_root->left);
+        display(tree_root->right);
+    }
+
+    void display() {
+        display(root);
+        cout << endl;
+    }
 };
 
 vector<string> load_roots_from_file(const string &filename)
@@ -290,57 +288,17 @@ public:
     }
 };
 
-int main()
-{
+int main(){
 
-    /* MorphHashTable hashTable;
-     Engine engine;
-
-     hashTable.insert({"فاعل", "active participle"});
-     hashTable.insert({"مفعول", "passive participle"});
-     hashTable.insert({"افتعل", "derived verb pattern"});
-     hashTable.insert({"تفعيل", "causative pattern"});
-
-     string root;
-     cout << "Enter Arabic root (3 letters): ";
-     cin >> root;
-
-     cout << "How many schemes do you want to apply? ";
-     int n;
-     cin >> n;
-
-     vector<string> selected_ids;
-
-     for (int i = 0; i < n; i++) {
-         string id;
-         cout << "Enter scheme " << i+1 << ": ";
-         cin >> id;
-
-         // Optional: verify scheme exists in hash table
-         if (hashTable.find(id) != nullptr) {
-             selected_ids.push_back(id);
-         } else {
-             cout << "Scheme not found!\n";
-         }
-     }
-
-    // Generate derived words
- // Generate derived words
- // Generate derived words
- /*vector<string> results = engine.derived_word_generation(root, selected_ids);
-
- cout << "\nGenerated Results:\n";
-
- for (size_t i = 0; i < results.size(); i++) {
-     cout << "("
-         << root << " , "
-         << selected_ids[i] << " , "
-         << results[i]
-         << ")"
-         << endl;*/
     vector<string> words = load_roots_from_file("roots.txt");
-    Arbre *abr = new Arbre;
-    Node *tree_root = abr->initialisation_arbre();
-    tree_root = abr->fill_tree(tree_root, words);
+
+    Arbre tree;
+    tree.fill_tree(words);
+
+    cout << "BST In-order:\n";
+    tree.display();
+
+    return 0;
+
 
 };
