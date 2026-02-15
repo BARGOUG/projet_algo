@@ -26,6 +26,8 @@ struct Arbre{
         return nullptr;
     }
     Node* root = initialisation_arbre();
+    vector<string> words = load_roots_from_file("roots.txt");  
+     
 };
     
 
@@ -234,7 +236,7 @@ public:
 
 int main() {
 
-    MorphHashTable hashTable;
+   /* MorphHashTable hashTable;
     Engine engine;
 
     hashTable.insert({"فاعل", "active participle"});
@@ -268,7 +270,7 @@ int main() {
    // Generate derived words
 // Generate derived words
 // Generate derived words
-vector<string> results = engine.derived_word_generation(root, selected_ids);
+/*vector<string> results = engine.derived_word_generation(root, selected_ids);
 
 cout << "\nGenerated Results:\n";
 
@@ -278,6 +280,6 @@ for (size_t i = 0; i < results.size(); i++) {
         << selected_ids[i] << " , "
         << results[i]
         << ")"
-        << endl;
-}
+        << endl;*/
+     
 }
