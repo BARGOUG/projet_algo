@@ -20,6 +20,8 @@ struct Node {
     Node* left;
     Node* right;
 };
+
+//definir la structure d'une arbre et insertion(na9sa el derived words)
 struct Arbre {
     Node* root;
 
@@ -46,7 +48,6 @@ struct Arbre {
             insert(tree_root->left, word);
         else if (word > tree_root->arabic_root)
             insert(tree_root->right, word);
-        // equal values: ignore or handle duplicates
     }
 
     // Fill tree from vector
@@ -56,7 +57,7 @@ struct Arbre {
         }
     }
 
-    // In-order traversal
+    // parcours infix
     void display(Node* tree_root) {
         if (!tree_root) return;
         cout << tree_root->arabic_root << " ";
@@ -69,7 +70,7 @@ struct Arbre {
         cout << endl;
     }
 };
-
+//extraction des racines from fichier text
 vector<string> load_roots_from_file(const string &filename)
 {
 
@@ -96,6 +97,7 @@ vector<string> load_roots_from_file(const string &filename)
 class Engine
 {
 public:
+//generation des derivation de mots a partir des racines et list des schema
     vector<string> derived_word_generation(string root, vector<string> ids)
     {
 
@@ -108,6 +110,7 @@ public:
 
         return results;
     }
+    //generation des derivation de mots a partir des racines et une seul schema
     string derived_word_generation(string root, string id)
     {
         if (root.length() < 3)
@@ -150,7 +153,7 @@ public:
     }
 };
 
-// 5.gestion de dervie valides
+// 5.generation de mot racine apartir de mot derivé et schema
 
 string get_original(string scheme, string derived_word)
 {
@@ -164,7 +167,7 @@ string get_original(string scheme, string derived_word)
     }
     return original;
 }
-
+// extraction de schema apartir de root et mot derivé 
 string get_scheme(string root, string derived_word)
 {
     vector<string> root_letters;
@@ -203,7 +206,7 @@ string get_scheme(string root, string derived_word)
     }
     return scheme_s;
 }
-
+//comparer le mot racine avec le mot derivé 
 bool compare(string original, string derived_word)
 {
     string scheme = get_scheme(original, derived_word);
@@ -216,7 +219,7 @@ struct MorphScheme
     string name;
     string description;
 };
-
+// ask chatgpt
 class MorphHashTable
 {
 private:
