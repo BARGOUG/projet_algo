@@ -6,17 +6,29 @@
 #include <list>
 using namespace std;
 
+
+// liste contenant les derivés d'une racine
 struct Derived_words{
-    vector <string> derived_wrods_list;
+    vector <string> derived_words_list;
     int frequence;
 
 };
+//Noeud d'une arbre
 struct Node {
     string arabic_root;
     char letters[3];
     Derived_words* derived;
     Node* left;
     Node* right;
+};
+struct Arbre{
+    Node* racine;
+    void intiat_arbre(){
+        
+    }
+
+
+
 };
 
 
@@ -69,6 +81,24 @@ class Engine{
         return result;
     }
 };
+
+
+
+// 5.gestion de dervie valides
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 string get_original(string scheme,string derived_word){
     string original= "";
     for(size_t i = 0; i < scheme.size(); i += 2){
@@ -79,7 +109,7 @@ string get_original(string scheme,string derived_word){
     return original;
 }
 
-string verification_morphology(string root, string derived_word) {
+string get_scheme(string root, string derived_word) {
     vector<string> root_letters;
     for (size_t i = 0; i < root.size(); i += 2) {
         root_letters.push_back(root.substr(i, 2));
@@ -110,15 +140,11 @@ string verification_morphology(string root, string derived_word) {
 }
 
 bool compare(string original,string derived_word){
-    string scheme =  verification_morphology(original,derived_word);
+    string scheme =  get_scheme(original,derived_word);
     string new_original = get_original(scheme,derived_word);
     return original==new_original;
 
 };
-
-
-
-
 
 
 
