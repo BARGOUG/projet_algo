@@ -61,20 +61,6 @@ class Engine{
         
         return result;
     }
-    void verification_morphology(string root, string derived_word) {
-        //decompose the dervied word into single characters
-    vector<string> decomposed_word;
-    for (size_t i = 0; i < derived_word.size();) {
-         char c = derived_word[i];
-        size_t charLength = 1;
-        decomposed_word.push_back(derived_word.substr(i, charLength));
-        i += charLength;
-    }
-
-    for (const auto& letter : decomposed_word) {
-        cout << letter << endl;
-    }
-}
 };
 
 
@@ -88,12 +74,19 @@ class Engine{
 
 
 
+string get_original(string scheme,string derived_word){
+    string original= "";
+    for(size_t i = 0; i < scheme.size(); i += 2){
+        if(scheme.substr(i,2)=="ف" || scheme.substr(i,2)=="ع"  || scheme.substr(i,2)=="ل"){
+            original+=derived_word.substr(i,2);
+        }
+    }
+    return original;
+}
 
 
 
-
-
-void verification_morphology(string root, string derived_word) {
+string verification_morphology(string root, string derived_word) {
 
     // 1️⃣ Decompose root
     vector<string> root_letters;
@@ -124,48 +117,45 @@ void verification_morphology(string root, string derived_word) {
             scheme.push_back(letter);
     }
 
-    // 4️⃣ Print scheme
-    cout << "Scheme: ";
+    // 4️⃣ return scheme
+    string scheme_s="";
     for (const auto& s : scheme)
-        cout << s;
+        scheme_s+=s;
+    cout<<(scheme_s) <<endl;
+    return scheme_s;
+};
+bool compare(string original,string derived_word){
+    string scheme =  verification_morphology(original,derived_word);
+    string new_original = get_original(scheme,derived_word);
+    return original==new_original;
 
-    cout << endl;
 };
 
 int main() {
-     
- verification_morphology("كتب", "كاتب");
-verification_morphology("جلس", "جالس");
-verification_morphology("ضرب", "ضارب");
-verification_morphology("لعب", "لاعب");
-verification_morphology("خرج", "خارج");
+  // Pattern: فاعل
+cout << compare("كتب", "كاتب");       // true
+cout <<compare("جلس", "جالس");       // true
+cout <<compare("لعب", "لاعب");       // true
+
+// Pattern: مفعول
+cout <<compare("كتب", "مكتوب");      // true
+cout <<compare("شرب", "مشروب");      // true
+cout <<compare("حفظ", "محفوظ");      // true
+
+// Pattern: افتعل
+cout <<compare("كتب", "اكتتب");      // true
+cout <<compare("حفظ", "احتفظ");      // true
+
+// Pattern: تفعيل
+cout <<compare("علم", "تعليم");      // true
+cout <<compare("نظم", "تنظيم");      // true
+cout << compare("درس", "تدريس");      // true
 
 
-verification_morphology("كتب", "مكتوب");
-verification_morphology("شرب", "مشروب");
-verification_morphology("ضرب", "مضروب");
-verification_morphology("حفظ", "محفوظ");
-verification_morphology("فتح", "مفتوح");
-
-
-verification_morphology("كتب", "اكتتب");
-verification_morphology("دخل", "ادخل");     // simplified (no hamza handling)
-verification_morphology("خرج", "اخرج");     // simplified
-verification_morphology("علم", "اعتلم");    // artificial but pattern-valid
-verification_morphology("حفظ", "احتفظ");
-
-
-
-verification_morphology("علم", "تعليم");
-verification_morphology("كتب", "تكتـيب");   // artificial but valid pattern
-verification_morphology("نظم", "تنظيم");
-verification_morphology("حرك", "تحريك");
-verification_morphology("درس", "تدريس");
 
 
      return 0;
 };
-
 
 
 
