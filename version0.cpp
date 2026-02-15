@@ -24,7 +24,18 @@ struct Node {
 
 
 class Engine{
-     string derived_word_generation(string root,string id) {
+    public :
+    vector<string> derived_word_generation(string root, vector<string> ids) {
+
+        vector<string> results;
+
+        for (const auto& id : ids) {
+            results.push_back(derived_word_generation(root, id));
+        }
+
+        return results;
+    }
+    string derived_word_generation(string root,string id) {
         if (root.length() < 3) return "";
         
         string result = "";
@@ -177,33 +188,44 @@ public:
 
 
 int main() {
-    MorphHashTable hashTable;
 
-    // Insert schemes
+    MorphHashTable hashTable;
+    Engine engine;
+
     hashTable.insert({"فاعل", "active participle"});
     hashTable.insert({"مفعول", "passive participle"});
     hashTable.insert({"افتعل", "derived verb pattern"});
-    hashTable.insert({"تفعيل", "causative or intensive pattern"});
+    hashTable.insert({"تفعيل", "causative pattern"});
 
-    // Display all schemes
-    cout << "All morphological schemes:\n";
-    hashTable.display();
+    string root;
+    cout << "Enter Arabic root (3 letters): ";
+    cin >> root;
 
-    // Find a scheme
-    MorphScheme* scheme = hashTable.find("مفعول");
-    if (scheme) {
-        cout << "Found scheme: " << scheme->name << " -> " << scheme->description << "\n";
+    cout << "How many schemes do you want to apply? ";
+    int n;
+    cin >> n;
+
+    vector<string> selected_ids;
+
+    for (int i = 0; i < n; i++) {
+        string id;
+        cout << "Enter scheme " << i+1 << ": ";
+        cin >> id;
+
+        // Optional: verify scheme exists in hash table
+        if (hashTable.find(id) != nullptr) {
+            selected_ids.push_back(id);
+        } else {
+            cout << "Scheme not found!\n";
+        }
     }
 
-    // Remove a scheme
-    hashTable.remove("افتعل");
-    cout << "After removing 'افتعل':\n";
-    hashTable.display();
+    // Generate derived words
+    vector<string> results = engine.derived_word_generation(root, selected_ids);
 
-    // Reuse the same variable, no redeclaration
-    scheme = hashTable.find("مفعول");
-    if (scheme) {
-        cout << "Access after removal: " << scheme->name << endl;
+    cout << "\nGenerated words:\n";
+    for (const auto& word : results) {
+        cout << word << endl;
     }
 
     return 0;
