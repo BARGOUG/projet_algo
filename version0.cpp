@@ -48,12 +48,43 @@ struct Arbre {
             insert(tree_root->right, word);
         // equal values: ignore or handle duplicates
         //calling the function that balances the tree after each added node
-        //tree_root = balance_tree(tree_root);
+        tree_root = balance_tree(tree_root);
     }
     Node* balance_tree(Node* tree_root){
+        if (tree_root == nullptr)
+        return tree_root;
 
+        int balance = getBalance(tree_root);
+
+        // LL Case
+        if (balance > 1 && getBalance(tree_root->left) >= 0)
+            return rightRotate(tree_root);
+
+        // RR Case
+        if (balance < -1 && getBalance(tree_root->right) <= 0)
+            return leftRotate(tree_root);
+
+        // LR Case
+        if (balance > 1 && getBalance(tree_root->left) < 0) {
+            tree_root->left = leftRotate(tree_root->left);
+            return rightRotate(tree_root);
+        }
+
+        // RL Case
+        if (balance < -1 && getBalance(tree_root->right) > 0) {
+            tree_root->right = rightRotate(tree_root->right);
+            return leftRotate(tree_root);
+        }
+
+    return tree_root; // already balanced
     }
+    
+    int getBalance(Node* tree_root) {
+    if (tree_root == nullptr)
+        return 0;
 
+    return checkheight(tree_root->left) - checkheight(tree_root->right);
+    }
     int checkheight(Node* tree_root){
         Node* temp_root = tree_root;
         if (temp_root ==nullptr){
@@ -61,6 +92,30 @@ struct Arbre {
         }
         return 1+ max(checkheight(temp_root->left), checkheight(temp_root->right));
     }
+    Node* rightRotate(Node* y) {
+    Node* x = y->left;
+    Node* T2 = x->right;
+
+    // Perform rotation
+    x->right = y;
+    y->left = T2;
+
+    return x; // new root of subtree
+    }
+
+
+    Node* leftRotate(Node* x) {
+    Node* y = x->right;
+    Node* T2 = y->left;
+
+    // Perform rotation
+    y->left = x;
+    x->right = T2;
+
+    return y; // new root
+    }
+
+
 
     // Fill tree from vector
     void fill_tree(const vector<string>& words) {
